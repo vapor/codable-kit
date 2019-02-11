@@ -56,6 +56,13 @@ public protocol ReflectionDecodable: AnyReflectionDecodable {
     /// - throws: Any errors comparing instances.
     /// - returns: `true` if supplied instance equals left side of `reflectDecoded()`.
     static func reflectDecodedIsLeft(_ item: Self) -> Bool
+
+    /// Indicates if the value contains any subvalues
+    static var isBaseType: Bool { get }
+}
+
+extension ReflectionDecodable {
+    public static var isBaseType: Bool { return false }
 }
 
 /// Type-erased ReflectionDecodable. Do not rely on this protocol.
@@ -65,6 +72,8 @@ public protocol AnyReflectionDecodable {
     
     /// Type-erased `reflectDecodedIsLeft()`.
     static func anyReflectDecodedIsLeft(_ item: Any) -> Bool
+
+    static var isBaseType: Bool { get }
 }
 
 extension AnyReflectionDecodable where Self: ReflectionDecodable {
@@ -78,6 +87,8 @@ extension AnyReflectionDecodable where Self: ReflectionDecodable {
     public static func anyReflectDecodedIsLeft(_ item: Any) -> Bool {
         return reflectDecodedIsLeft(item as! Self)
     }
+
+    public static var isBaseType: Bool { return Self.isBaseType }
 }
 
 extension ReflectionDecodable where Self: Equatable {
@@ -94,42 +105,76 @@ extension ReflectionDecodable where Self: Equatable {
 extension String: ReflectionDecodable {
     /// See `ReflectionDecodable`.
     public static func reflectDecoded() -> (String, String) { return ("0", "1") }
+
+    public static var isBaseType: Bool { return true }
 }
 
 extension FixedWidthInteger {
     /// See `ReflectionDecodable`.
     public static func reflectDecoded() -> (Self, Self) { return (0, 1) }
+
+    public static var isBaseType: Bool { return true }
 }
 
-extension UInt: ReflectionDecodable { }
-extension UInt8: ReflectionDecodable { }
-extension UInt16: ReflectionDecodable { }
-extension UInt32: ReflectionDecodable { }
-extension UInt64: ReflectionDecodable { }
+extension UInt: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
+extension UInt8: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
+extension UInt16: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
+extension UInt32: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
+extension UInt64: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
 
-extension Int: ReflectionDecodable { }
-extension Int8: ReflectionDecodable { }
-extension Int16: ReflectionDecodable { }
-extension Int32: ReflectionDecodable { }
-extension Int64: ReflectionDecodable { }
+extension Int: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
+extension Int8: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
+extension Int16: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
+extension Int32: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
+extension Int64: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
 
 extension Bool: ReflectionDecodable {
     /// See `ReflectionDecodable`.
     public static func reflectDecoded() -> (Bool, Bool) { return (false, true) }
+
+    public static var isBaseType: Bool { return true }
 }
 
 extension BinaryFloatingPoint {
     /// See `ReflectionDecodable`.
     public static func reflectDecoded() -> (Self, Self) { return (0, 1) }
+
+    public static var isBaseType: Bool { return true }
 }
 
 extension Decimal: ReflectionDecodable {
     /// See `ReflectionDecodable`.
     public static func reflectDecoded() -> (Decimal, Decimal) { return (0, 1) }
+
+    public static var isBaseType: Bool { return true }
 }
 
-extension Float: ReflectionDecodable { }
-extension Double: ReflectionDecodable { }
+extension Float: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
+extension Double: ReflectionDecodable {
+    public static var isBaseType: Bool { return true }
+}
 
 extension UUID: ReflectionDecodable {
     /// See `ReflectionDecodable`.
@@ -138,6 +183,8 @@ extension UUID: ReflectionDecodable {
         let right = UUID(uuid: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2))
         return (left, right)
     }
+
+    public static var isBaseType: Bool { return true }
 }
 
 extension Data: ReflectionDecodable {
@@ -147,6 +194,8 @@ extension Data: ReflectionDecodable {
         let right = Data([0x01])
         return (left, right)
     }
+
+    public static var isBaseType: Bool { return true }
 }
 
 extension Date: ReflectionDecodable {
@@ -156,6 +205,8 @@ extension Date: ReflectionDecodable {
         let right = Date(timeIntervalSince1970: 0)
         return (left, right)
     }
+
+    public static var isBaseType: Bool { return true }
 }
 
 extension Array: ReflectionDecodable, AnyReflectionDecodable where Element: ReflectionDecodable {
@@ -213,4 +264,6 @@ extension ReflectionDecodable where Self: CaseIterable {
         }
         return (first, last)
     }
+
+    public static var isBaseType: Bool { return true }
 }
