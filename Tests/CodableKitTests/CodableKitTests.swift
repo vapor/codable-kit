@@ -3,7 +3,7 @@ import Foundation
 import XCTest
 
 final class CodableKitTests: XCTestCase {
-    func testStruct() throws {
+    func testCodableReflection() throws {
         struct Foo: Reflectable, Codable {
             enum Direction: UInt8, ReflectionDecodable, Codable, CaseIterable {
                 static let allCases: [Direction] = [.left, .right]
@@ -69,7 +69,7 @@ final class CodableKitTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testStruct", testStruct),
+        ("testCodableReflection", testCodableReflection),
         ("testDecoderUnwrapper", testDecoderUnwrapper),
         ("testEncodableWrapper", testEncodableWrapper),
     ]
