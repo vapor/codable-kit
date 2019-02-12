@@ -13,10 +13,6 @@ final class CodableKitTests: XCTestCase {
                     return (Nested(a: "0", b: 0), Nested(a: "1", b: 1))
                 }
 
-                static func reflectDecodedIsLeft(_ item: Foo.Nested) -> Bool {
-                    return reflectDecoded().0 == item
-                }
-
                 static var isBaseType: Bool { return false }
 
                 var a: String
