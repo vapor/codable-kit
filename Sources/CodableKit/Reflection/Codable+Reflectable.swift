@@ -65,7 +65,7 @@ extension Decodable where Self: Encodable {
 // MARK: Private
 
 /// Caches derived `ReflectedProperty`s so that they only need to be decoded once per thread.
-private final class ReflectedPropertyCache {
+private final class ReflectedPropertyCache: NSObject {
     /// Thread-specific shared storage.
     static var storage: [AnyKeyPath: ReflectedProperty] {
         get {
@@ -80,7 +80,7 @@ private final class ReflectedPropertyCache {
     private var storage: [AnyKeyPath: ReflectedProperty]
 
     /// Creates a new `ReflectedPropertyCache`.
-    init() {
+    override init() {
         self.storage = [:]
     }
 }
