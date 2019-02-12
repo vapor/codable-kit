@@ -57,7 +57,7 @@ public protocol DataEncoder {
 }
 
 /// A type capable of encoding `Encodable` objects to `Data` and decoding `Data` to `Decodable` objects.
-public protocol DataCoder: DataEncoder, DataDecoder {}
+public typealias DataCoder: DataEncoder & DataDecoder
 
 /// MARK: Default Conformances
 extension JSONEncoder: DataEncoder { }
