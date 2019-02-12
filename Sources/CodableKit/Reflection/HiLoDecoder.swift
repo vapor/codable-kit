@@ -9,14 +9,14 @@ struct HiLoDecoder<Root, Value>: Decoder {
     let userInfo: [CodingUserInfoKey: Any] = [:]
 
     init(signal: Signal, keyPath: KeyPath<Root, Value>? = nil) {
-        self.init(.init(signal: signal), codingPath: [], keyPath: keyPath)
+        self.init(.init(signal: signal), codingPath: [])
     }
 
     var properties: [ReflectedProperty] {
         return ctx.properties
     }
 
-    private init(_ ctx: Context, codingPath: [CodingKey], keyPath: KeyPath<Root, Value>?) {
+    private init(_ ctx: Context, codingPath: [CodingKey]) {
         self.ctx = ctx
         self.codingPath = codingPath
     }
@@ -96,11 +96,11 @@ struct HiLoDecoder<Root, Value>: Decoder {
         }
 
         func superDecoder() throws -> Decoder {
-            return HiLoDecoder<Root, Value>(ctx, codingPath: codingPath, keyPath: nil)
+            return HiLoDecoder<Root, Value>(ctx, codingPath: codingPath)
         }
 
         func superDecoder(forKey key: Key) throws -> Decoder {
-            return HiLoDecoder<Root, Value>(ctx, codingPath: codingPath + [key], keyPath: nil)
+            return HiLoDecoder<Root, Value>(ctx, codingPath: codingPath + [key])
         }
     }
 
@@ -140,7 +140,7 @@ struct HiLoDecoder<Root, Value>: Decoder {
         }
 
         mutating func superDecoder() throws -> Decoder {
-            return HiLoDecoder<Root, Value>(ctx, codingPath: codingPath + [key], keyPath: nil)
+            return HiLoDecoder<Root, Value>(ctx, codingPath: codingPath + [key])
         }
     }
 
@@ -167,7 +167,7 @@ struct HiLoDecoder<Root, Value>: Decoder {
                 case .lo: return custom.anyReflectDecoded().0 as! T
                 }
             } else {
-                let decoder = HiLoDecoder(ctx, codingPath: codingPath, keyPath: nil)
+                let decoder = HiLoDecoder(ctx, codingPath: codingPath)
                 return try T.init(from: decoder)
             }
         }

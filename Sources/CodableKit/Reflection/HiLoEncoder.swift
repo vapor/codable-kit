@@ -9,10 +9,10 @@ struct HiLoEncoder<Root, Value>: Encoder {
     }
 
     init(keyPath: KeyPath<Root, Value>?) {
-        self.init(.init(), codingPath: [], keyPath: keyPath)
+        self.init(.init(), codingPath: [])
     }
 
-    private init(_ ctx: Context, codingPath: [CodingKey], keyPath: KeyPath<Root, Value>?) {
+    private init(_ ctx: Context, codingPath: [CodingKey]) {
         self.ctx = ctx
         self.codingPath = codingPath
     }
@@ -69,11 +69,11 @@ struct HiLoEncoder<Root, Value>: Encoder {
         }
 
         mutating func superEncoder() -> Encoder {
-            return HiLoEncoder<Root, Value>(ctx, codingPath: codingPath, keyPath: nil)
+            return HiLoEncoder<Root, Value>(ctx, codingPath: codingPath)
         }
 
         mutating func superEncoder(forKey key: Key) -> Encoder {
-            return HiLoEncoder<Root, Value>(ctx, codingPath: codingPath + [key], keyPath: nil)
+            return HiLoEncoder<Root, Value>(ctx, codingPath: codingPath + [key])
         }
     }
 
@@ -106,7 +106,7 @@ struct HiLoEncoder<Root, Value>: Encoder {
         }
 
         mutating func superEncoder() -> Encoder {
-            return HiLoEncoder<Root, Value>(ctx, codingPath: codingPath, keyPath: nil)
+            return HiLoEncoder<Root, Value>(ctx, codingPath: codingPath)
         }
     }
 
@@ -130,7 +130,7 @@ struct HiLoEncoder<Root, Value>: Encoder {
                     ctx.hi(codingPath)
                 }
             } else {
-                let encoder = HiLoEncoder<Root, Value>(ctx, codingPath: codingPath, keyPath: nil)
+                let encoder = HiLoEncoder<Root, Value>(ctx, codingPath: codingPath)
                 return try value.encode(to: encoder)
             }
         }
