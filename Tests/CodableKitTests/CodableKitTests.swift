@@ -1,23 +1,25 @@
 import CodableKit
+import Foundation
 import XCTest
 
 final class CodableKitTests: XCTestCase {
-    func testStruct() throws {
+    func testCodableReflection() throws {
         struct Foo: Reflectable, Codable {
             enum Direction: UInt8, ReflectionDecodable, Codable, CaseIterable {
                 static let allCases: [Direction] = [.left, .right]
                 case left, right
             }
+          
             struct Nested: Codable, ReflectionDecodable, Equatable {
                 static func reflectDecoded() -> (Foo.Nested, Foo.Nested) {
                     return (Nested(a: "0", b: 0), Nested(a: "1", b: 1))
                 }
 
                 static var isBaseType: Bool { return false }
-
                 var a: String
                 var b: Int
             }
+
             var bool: Bool
             var obool: Bool?
             var int: Int
@@ -59,13 +61,28 @@ final class CodableKitTests: XCTestCase {
         try XCTAssert(Foo.reflectProperty(forKey: \.odir)?.type is Foo.Direction?.Type)
         try XCTAssertEqual(Foo.reflectProperty(forKey: \.nested.a)?.path, ["nested", "a"])
         try XCTAssert(Foo.reflectProperty(forKey: \.nested.a)?.type is String.Type)
+
         try XCTAssertEqual(Foo.reflectProperty(forKey: \.nested)?.path, ["nested"])
         try XCTAssert(Foo.reflectProperty(forKey: \.nested)?.type is Foo.Nested.Type)
         try XCTAssertEqual(Foo.reflectProperty(forKey: \.onested)?.path, ["onested"])
         try XCTAssert(Foo.reflectProperty(forKey: \.onested)?.type is Foo.Nested?.Type)
     }
+  
+    func testDecoderUnwrapper() throws {
+        let data = "{}".data(using: .utf8)!
+        let unwrapper = try JSONDecoder().decode(DecoderUnwrapper.self, from: data)
+        print(unwrapper.decoder) // Decoder
+    }
+    
+    func testEncodableWrapper() throws {
+        let encodable: Encodable = ["hello": "world"]
+        let data = try JSONEncoder().encode(EncodableWrapper(encodable))
+        print(data)
+    }
 
     static var allTests = [
-        ("testStruct", testStruct),
+        ("testCodableReflection", testCodableReflection),
+        ("testDecoderUnwrapper", testDecoderUnwrapper),
+        ("testEncodableWrapper", testEncodableWrapper),
     ]
 }

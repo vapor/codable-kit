@@ -49,6 +49,7 @@ struct HiLoDecoder<Root, Value>: Decoder {
             nextIsOptional = false
         }
 
+      
         func add<T>(_ type: T.Type, at codingPath: [CodingKey]) {
             let property: ReflectedProperty
             let path = codingPath.map { $0.stringValue }
@@ -108,7 +109,7 @@ struct HiLoDecoder<Root, Value>: Decoder {
         var isAtEnd: Bool
         var currentIndex: Int
         var key: CodingKey {
-            return BasicCodingKey.int(currentIndex)
+            return StringCodingKey.int(currentIndex)
         }
         let ctx: Context
         let codingPath: [CodingKey]

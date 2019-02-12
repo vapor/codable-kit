@@ -30,7 +30,6 @@ extension Decodable where Self: Encodable {
     /// - throws: Any error decoding this type's properties.
     /// - returns: All `ReflectedProperty`s at the specified depth.
     public static func decodeProperties(depth: Int) throws -> [ReflectedProperty] {
-
         // Using Void as the generic type in order to not return true when comparing types
         // T.Type is Value (If it is Any, will it allways return true and may cause a bug)
         let decoder = HiLoDecoder<Void, Void>(signal: .lo, keyPath: nil)
@@ -68,7 +67,7 @@ extension Decodable where Self: Encodable {
 // MARK: Private
 
 /// Caches derived `ReflectedProperty`s so that they only need to be decoded once per thread.
-private final class ReflectedPropertyCache {
+private final class ReflectedPropertyCache: NSObject {
     /// Thread-specific shared storage.
     static var storage: [AnyKeyPath: ReflectedProperty] {
         get {
@@ -83,7 +82,7 @@ private final class ReflectedPropertyCache {
     private var storage: [AnyKeyPath: ReflectedProperty]
 
     /// Creates a new `ReflectedPropertyCache`.
-    init() {
+    override init() {
         self.storage = [:]
     }
 }
