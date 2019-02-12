@@ -31,7 +31,7 @@ extension DataDecoder {
     ///   - data: The data that the decoder will hold
     /// - returns: The internal decoder type.
     /// - throws: Any error that may occur while parsing the data passed in.
-    public func decoder(with data: Data)throws -> Decoder {
+    public func decoder(from data: Data) throws -> Decoder {
         return try self.decode(DecoderUnwrapper.self, from: data).decoder
     }
 }
@@ -71,7 +71,7 @@ extension JSONDecoder: DataDecoder {
     ///   - data: The data that the decoder will hold
     /// - returns: The internal decoder type.
     /// - throws: Any error that may occur while parsing the data passed in.
-    public static func decoder(with data: Data)throws -> Decoder {
+    public static func decoder(from data: Data) throws -> Decoder {
         return try JSONDecoder().decode(DecoderUnwrapper.self, from: data).decoder
     }
 }
@@ -88,7 +88,7 @@ extension PropertyListDecoder: DataDecoder {
     ///   - data: The data that the decoder will hold
     /// - returns: The internal decoder type.
     /// - throws: Any error that may occur while parsing the data passed in.
-    public static func decoder(with data: Data)throws -> Decoder {
+    public static func decoder(from data: Data) throws -> Decoder {
         return try PropertyListDecoder().decode(DecoderUnwrapper.self, from: data).decoder
     }
 }
