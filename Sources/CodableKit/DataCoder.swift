@@ -48,5 +48,7 @@ public protocol DataCoder: DataEncoder, DataDecoder {}
 extension JSONDecoder: DataDecoder { }
 extension JSONEncoder: DataEncoder { }
 
+#if os(macOS)
 extension PropertyListDecoder: DataDecoder { }
 extension PropertyListEncoder: DataEncoder { }
+#endif
