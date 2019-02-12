@@ -1,15 +1,22 @@
 import XCTest
-@testable import CodableKit
+import Foundation
+import CodableKit
 
 final class CodableKitTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(CodableKit().text, "Hello, World!")
+    func testDecoderUnwrapper() throws {
+        let data = "{}".data(using: .utf8)!
+        let unwrapper = try JSONDecoder().decode(DecoderUnwrapper.self, from: data)
+        print(unwrapper.decoder) // Decoder
+    }
+    
+    func testEncodableWrapper() throws {
+        let encodable: Encodable = ["hello": "world"]
+        let data = try JSONEncoder().encode(EncodableWrapper(encodable))
+        print(data)
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testDecoderUnwrapper", testDecoderUnwrapper),
+        ("testEncodableWrapper", testEncodableWrapper),
     ]
 }
