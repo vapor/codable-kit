@@ -21,6 +21,21 @@ public protocol DataDecoder {
     func decode<D>(_ decodable: D.Type, from data: Data) throws -> D where D: Decodable
 }
 
+extension DataDecoder {
+    
+    /// Extracts the internal decoder for a public decoder type.
+    ///
+    ///     let decoder: Decoder = try JSONDecoder().decoder(with: data)
+    ///
+    /// - parameters:
+    ///   - data: The data that the decoder will hold
+    /// - returns: The internal decoder type.
+    /// - throws: Any error that may occur while parsing the data passed in.
+    public func decoder(with data: Data)throws -> Decoder {
+        return try self.decode(DecoderUnwrapper.self, from: data).decoder
+    }
+}
+
 /// A type capable of encoding `Encodable` objects to `Data`.
 ///
 ///     print(user) /// User
@@ -45,10 +60,36 @@ public protocol DataEncoder {
 public protocol DataCoder: DataEncoder, DataDecoder {}
 
 /// MARK: Default Conformances
-extension JSONDecoder: DataDecoder { }
 extension JSONEncoder: DataEncoder { }
+extension JSONDecoder: DataDecoder {
+    
+    /// Extracts the internal decoder for a public decoder type.
+    ///
+    ///     let decoder: Decoder = try JSONDecoder.decoder(with: data)
+    ///
+    /// - parameters:
+    ///   - data: The data that the decoder will hold
+    /// - returns: The internal decoder type.
+    /// - throws: Any error that may occur while parsing the data passed in.
+    public static func decoder(with data: Data)throws -> Decoder {
+        return try JSONDecoder().decode(DecoderUnwrapper.self, from: data).decoder
+    }
+}
 
 #if os(macOS)
-extension PropertyListDecoder: DataDecoder { }
 extension PropertyListEncoder: DataEncoder { }
+extension PropertyListDecoder: DataDecoder {
+    
+    /// Extracts the internal decoder for a public decoder type.
+    ///
+    ///     let decoder: Decoder = try JSONDecoder.decoder(with: data)
+    ///
+    /// - parameters:
+    ///   - data: The data that the decoder will hold
+    /// - returns: The internal decoder type.
+    /// - throws: Any error that may occur while parsing the data passed in.
+    public static func decoder(with data: Data)throws -> Decoder {
+        return try PropertyListDecoder().decode(DecoderUnwrapper.self, from: data).decoder
+    }
+}
 #endif
