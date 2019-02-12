@@ -7,7 +7,6 @@ struct HiLoDecoder<Root, Value>: Decoder {
     private let ctx: Context
     let codingPath: [CodingKey]
     let userInfo: [CodingUserInfoKey: Any] = [:]
-    let keyPath: KeyPath<Root, Value>?
 
     init(signal: Signal, keyPath: KeyPath<Root, Value>? = nil) {
         self.init(.init(signal: signal), codingPath: [], keyPath: keyPath)
@@ -20,7 +19,6 @@ struct HiLoDecoder<Root, Value>: Decoder {
     private init(_ ctx: Context, codingPath: [CodingKey], keyPath: KeyPath<Root, Value>?) {
         self.ctx = ctx
         self.codingPath = codingPath
-        self.keyPath = keyPath
     }
 
     func decode<T>(_ type: T.Type) throws -> T where T : Decodable {
@@ -161,7 +159,6 @@ struct HiLoDecoder<Root, Value>: Decoder {
 
         func decode<T>(_ type: T.Type) throws -> T where T : Decodable {
             ctx.add(T.self, at: codingPath)
-            print(T.self, Value.self)
             if let custom = T.self as? AnyReflectionDecodable.Type,
                 custom.isBaseType || type is Value {
                 switch ctx.signal {

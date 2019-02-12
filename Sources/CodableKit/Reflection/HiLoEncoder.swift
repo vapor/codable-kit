@@ -3,7 +3,6 @@ struct HiLoEncoder<Root, Value>: Encoder {
     let codingPath: [CodingKey]
     let userInfo: [CodingUserInfoKey: Any] = [:]
     private let ctx: Context
-    let keyPath: KeyPath<Root, Value>?
 
     var hi: [CodingKey]? {
         return ctx.hiCodingPath
@@ -16,7 +15,6 @@ struct HiLoEncoder<Root, Value>: Encoder {
     private init(_ ctx: Context, codingPath: [CodingKey], keyPath: KeyPath<Root, Value>?) {
         self.ctx = ctx
         self.codingPath = codingPath
-        self.keyPath = keyPath
     }
 
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key : CodingKey {
