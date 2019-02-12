@@ -8,7 +8,17 @@ final class CodableKitTests: XCTestCase {
                 static let allCases: [Direction] = [.left, .right]
                 case left, right
             }
-            struct Nested: Codable {
+            struct Nested: Codable, ReflectionDecodable, Equatable {
+                static func reflectDecoded() -> (Foo.Nested, Foo.Nested) {
+                    return (Nested(a: "0", b: 0), Nested(a: "1", b: 1))
+                }
+
+                static func reflectDecodedIsLeft(_ item: Foo.Nested) -> Bool {
+                    return reflectDecoded().0 == item
+                }
+
+                static var isBaseType: Bool { return false }
+
                 var a: String
                 var b: Int
             }
@@ -53,6 +63,10 @@ final class CodableKitTests: XCTestCase {
         try XCTAssert(Foo.reflectProperty(forKey: \.odir)?.type is Foo.Direction?.Type)
         try XCTAssertEqual(Foo.reflectProperty(forKey: \.nested.a)?.path, ["nested", "a"])
         try XCTAssert(Foo.reflectProperty(forKey: \.nested.a)?.type is String.Type)
+        try XCTAssertEqual(Foo.reflectProperty(forKey: \.nested)?.path, ["nested"])
+        try XCTAssert(Foo.reflectProperty(forKey: \.nested)?.type is Foo.Nested.Type)
+        try XCTAssertEqual(Foo.reflectProperty(forKey: \.onested)?.path, ["onested"])
+        try XCTAssert(Foo.reflectProperty(forKey: \.onested)?.type is Foo.Nested?.Type)
     }
 
     static var allTests = [
