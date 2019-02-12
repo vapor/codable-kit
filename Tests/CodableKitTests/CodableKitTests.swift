@@ -1,4 +1,5 @@
 import CodableKit
+import Foundation
 import XCTest
 
 final class CodableKitTests: XCTestCase {
@@ -54,8 +55,22 @@ final class CodableKitTests: XCTestCase {
         try XCTAssertEqual(Foo.reflectProperty(forKey: \.nested.a)?.path, ["nested", "a"])
         try XCTAssert(Foo.reflectProperty(forKey: \.nested.a)?.type is String.Type)
     }
+  
+    func testDecoderUnwrapper() throws {
+        let data = "{}".data(using: .utf8)!
+        let unwrapper = try JSONDecoder().decode(DecoderUnwrapper.self, from: data)
+        print(unwrapper.decoder) // Decoder
+    }
+    
+    func testEncodableWrapper() throws {
+        let encodable: Encodable = ["hello": "world"]
+        let data = try JSONEncoder().encode(EncodableWrapper(encodable))
+        print(data)
+    }
 
     static var allTests = [
         ("testStruct", testStruct),
+        ("testDecoderUnwrapper", testDecoderUnwrapper),
+        ("testEncodableWrapper", testEncodableWrapper),
     ]
 }
