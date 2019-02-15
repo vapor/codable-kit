@@ -25,7 +25,7 @@ extension DataDecoder {
     
     /// Extracts the internal decoder for a public decoder type.
     ///
-    ///     let decoder: Decoder = try JSONDecoder().decoder(with: data)
+    ///     let decoder: Decoder = try JSONDecoder().decoder(from: data)
     ///
     /// - parameters:
     ///   - data: The data that the decoder will hold
@@ -65,7 +65,7 @@ extension JSONDecoder: DataDecoder {
     
     /// Extracts the internal decoder for a public decoder type.
     ///
-    ///     let decoder: Decoder = try JSONDecoder.decoder(with: data)
+    ///     let decoder: Decoder = try JSONDecoder.decoder(from: data)
     ///
     /// - parameters:
     ///   - data: The data that the decoder will hold
