@@ -63,10 +63,6 @@ extension Decodable where Self: Encodable {
     }
 }
 
-extension KeyPath {
-    var valueType: Value.Type { return Value.self }
-}
-
 // MARK: Private
 
 /// Caches derived `ReflectedProperty`s so that they only need to be decoded once per thread.
