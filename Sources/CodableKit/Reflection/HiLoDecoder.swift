@@ -1,14 +1,14 @@
 // MARK: Internal
 
 /// Decodes types as either "hi" or "lo" signal.
-struct HiLoDecoder<Root, Value>: Decoder {
+struct HiLoDecoder<Value>: Decoder {
     enum Signal { case hi, lo }
 
     private let ctx: Context
     let codingPath: [CodingKey]
     let userInfo: [CodingUserInfoKey: Any] = [:]
 
-    init(signal: Signal, keyPath: KeyPath<Root, Value>? = nil) {
+    init(signal: Signal, stopOn: Value.Type) {
         self.init(.init(signal: signal), codingPath: [])
     }
 
@@ -96,11 +96,11 @@ struct HiLoDecoder<Root, Value>: Decoder {
         }
 
         func superDecoder() throws -> Decoder {
-            return HiLoDecoder<Root, Value>(ctx, codingPath: codingPath)
+            return HiLoDecoder(ctx, codingPath: codingPath)
         }
 
         func superDecoder(forKey key: Key) throws -> Decoder {
-            return HiLoDecoder<Root, Value>(ctx, codingPath: codingPath + [key])
+            return HiLoDecoder(ctx, codingPath: codingPath + [key])
         }
     }
 
@@ -109,7 +109,8 @@ struct HiLoDecoder<Root, Value>: Decoder {
         var isAtEnd: Bool
         var currentIndex: Int
         var key: CodingKey {
-            return StringCodingKey.int(currentIndex)
+            return StringCodingKey.init(intValue: currentIndex)!
+//            return StringCodingKey.int(currentIndex)
         }
         let ctx: Context
         let codingPath: [CodingKey]
@@ -140,7 +141,7 @@ struct HiLoDecoder<Root, Value>: Decoder {
         }
 
         mutating func superDecoder() throws -> Decoder {
-            return HiLoDecoder<Root, Value>(ctx, codingPath: codingPath + [key])
+            return HiLoDecoder(ctx, codingPath: codingPath + [key])
         }
     }
 
@@ -161,7 +162,7 @@ struct HiLoDecoder<Root, Value>: Decoder {
         func decode<T>(_ type: T.Type) throws -> T where T : Decodable {
             ctx.add(T.self, at: codingPath)
             if let custom = T.self as? AnyReflectionDecodable.Type,
-                custom.isBaseType || type is Value {
+                custom.isPrimitiveType || type is Value {
                 switch ctx.signal {
                 case .hi: return custom.anyReflectDecoded().1 as! T
                 case .lo: return custom.anyReflectDecoded().0 as! T

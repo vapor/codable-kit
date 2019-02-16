@@ -15,7 +15,6 @@ final class CodableKitTests: XCTestCase {
                     return (Nested(a: "0", b: 0), Nested(a: "1", b: 1))
                 }
 
-                static var isBaseType: Bool { return false }
                 var a: String
                 var b: Int
             }

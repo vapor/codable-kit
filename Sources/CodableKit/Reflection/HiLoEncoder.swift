@@ -1,5 +1,5 @@
 /// Encodes types, detecting coding path for "hi" signal values.
-struct HiLoEncoder<Root, Value>: Encoder {
+struct HiLoEncoder<Value>: Encoder {
     let codingPath: [CodingKey]
     let userInfo: [CodingUserInfoKey: Any] = [:]
     private let ctx: Context
@@ -8,7 +8,7 @@ struct HiLoEncoder<Root, Value>: Encoder {
         return ctx.hiCodingPath
     }
 
-    init(keyPath: KeyPath<Root, Value>?) {
+    init(stopOn: Value.Type) {
         self.init(.init(), codingPath: [])
     }
 
@@ -69,11 +69,11 @@ struct HiLoEncoder<Root, Value>: Encoder {
         }
 
         mutating func superEncoder() -> Encoder {
-            return HiLoEncoder<Root, Value>(ctx, codingPath: codingPath)
+            return HiLoEncoder<Value>(ctx, codingPath: codingPath)
         }
 
         mutating func superEncoder(forKey key: Key) -> Encoder {
-            return HiLoEncoder<Root, Value>(ctx, codingPath: codingPath + [key])
+            return HiLoEncoder<Value>(ctx, codingPath: codingPath + [key])
         }
     }
 
@@ -106,7 +106,7 @@ struct HiLoEncoder<Root, Value>: Encoder {
         }
 
         mutating func superEncoder() -> Encoder {
-            return HiLoEncoder<Root, Value>(ctx, codingPath: codingPath)
+            return HiLoEncoder<Value>(ctx, codingPath: codingPath)
         }
     }
 
@@ -125,12 +125,12 @@ struct HiLoEncoder<Root, Value>: Encoder {
 
         mutating func encode<T>(_ value: T) throws where T: Encodable {
             if let custom = T.self as? AnyReflectionDecodable.Type,
-                custom.isBaseType || value is Value {
+                custom.isPrimitiveType || value is Value {
                 if !custom.anyReflectDecodedIsLeft(value) {
                     ctx.hi(codingPath)
                 }
             } else {
-                let encoder = HiLoEncoder<Root, Value>(ctx, codingPath: codingPath)
+                let encoder = HiLoEncoder<Value>(ctx, codingPath: codingPath)
                 return try value.encode(to: encoder)
             }
         }
