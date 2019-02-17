@@ -8,7 +8,7 @@ struct HiLoDecoder<Value>: Decoder {
     let codingPath: [CodingKey]
     let userInfo: [CodingUserInfoKey: Any] = [:]
 
-    init(signal: Signal, stopOn: Value.Type) {
+    init(signal: Signal) {
         self.init(.init(signal: signal), codingPath: [])
     }
 
@@ -110,7 +110,6 @@ struct HiLoDecoder<Value>: Decoder {
         var currentIndex: Int
         var key: CodingKey {
             return StringCodingKey.init(intValue: currentIndex)!
-//            return StringCodingKey.int(currentIndex)
         }
         let ctx: Context
         let codingPath: [CodingKey]

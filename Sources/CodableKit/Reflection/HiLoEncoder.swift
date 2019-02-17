@@ -8,7 +8,7 @@ struct HiLoEncoder<Value>: Encoder {
         return ctx.hiCodingPath
     }
 
-    init(stopOn: Value.Type) {
+    init() {
         self.init(.init(), codingPath: [])
     }
 

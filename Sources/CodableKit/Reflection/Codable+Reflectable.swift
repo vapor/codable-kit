@@ -32,7 +32,7 @@ extension Decodable where Self: Encodable {
     public static func decodeProperties(depth: Int) throws -> [ReflectedProperty] {
         // Using Void as the generic type in order to not return true when comparing types
         // T.Type is Value (If it is Any, will it allways return true and may cause a bug)
-        let decoder = HiLoDecoder(signal: .lo, stopOn: Void.self)
+        let decoder = HiLoDecoder<Void>(signal: .lo)
         _ = try Self(from: decoder)
         return decoder.properties.filter { $0.path.count == depth + 1 }
     }
@@ -52,9 +52,9 @@ extension Decodable where Self: Encodable {
         if let cached = ReflectedPropertyCache.storage[keyPath] {
             return cached
         }
-        var lo = try Self(from: HiLoDecoder(signal: .lo, stopOn: keyPath.valueType))
+        var lo = try Self(from: HiLoDecoder<T>(signal: .lo))
         lo[keyPath: keyPath] = T.reflectDecoded().1
-        let e = HiLoEncoder(stopOn: keyPath.valueType)
+        let e = HiLoEncoder<T>()
         try lo.encode(to: e)
         guard let hi = e.hi else {
             return nil
