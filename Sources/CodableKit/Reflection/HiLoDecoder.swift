@@ -109,7 +109,7 @@ struct HiLoDecoder<Value>: Decoder {
         var isAtEnd: Bool
         var currentIndex: Int
         var key: CodingKey {
-            return StringCodingKey.init(intValue: currentIndex)!
+            return StringCodingKey(intValue: currentIndex)
         }
         let ctx: Context
         let codingPath: [CodingKey]
