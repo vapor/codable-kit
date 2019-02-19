@@ -14,12 +14,12 @@ public struct StringCodingKey: CodingKey {
     }
     
     /// `CodingKey` conformance.
-    public init?(stringValue: String) {
+    public init(stringValue: String) {
         self.stringValue = stringValue
     }
     
     /// `CodingKey` conformance.
-    public init?(intValue: Int) {
+    public init(intValue: Int) {
         self.stringValue = intValue.description
     }
 }
